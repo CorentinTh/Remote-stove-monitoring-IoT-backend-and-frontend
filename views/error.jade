@@ -1,0 +1,43 @@
+extends layout
+
+
+
+
+block content
+    .ct-404-container
+        .ct-404-content
+            .ct-404-message
+                h1 ERROR 404 NOT FOUND
+                p You may have mis-typed the URL.
+                p Or the page has been removed.
+                p Actually, there is nothing to see here...
+                p Click on the links below to do something, thanks!
+                .ct-404-buttons
+                    a(href='/')
+                        i.fa.fa-home(aria-hidden='true')
+                        |  Home
+                    a(href='/contact')
+                        i.fa.fa-pencil-square-o(aria-hidden='true')
+                        |  Write to us
+
+        //
+            if error.status == 404 || error.status == '404'
+                .ct-404-message
+                        h1 ERROR 404 NOT FOUND
+                        p You may have mis-typed the URL.
+                        p Or the page has been removed.
+                        p Actually, there is nothing to see here...
+                        p Click on the links below to do something, thanks!
+                        .ct-404-buttons
+                            a(href='/')
+                                i.fa.fa-home(aria-hidden='true')
+                                |  Home
+                            a(href='/contact')
+                                i.fa.fa-pencil-square-o(aria-hidden='true')
+                                |  Write to us
+            else
+                .ct-404-debug
+                    .ct-404-message
+                        h1 ERROR
+                        p.ct-404-debug-message #{message} #{error.status}
+                        pre #{error.stack}

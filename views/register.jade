@@ -1,0 +1,37 @@
+extends layout
+
+block content
+    .container
+        .col-lg-4.col-lg-offset-4.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+            .panel.panel-default
+                .panel-body
+                    h2.text-center Register
+                    br
+                    if errors
+                        .alert.alert-danger.alert-dismissable
+                            a.close(href='#', data-dismiss='alert', aria-label='close') ×
+                            ul
+                                each msg in errors
+                                    li #{msg.msg}
+
+                    form.ct-form(action='' method='post')
+                        .form-group.ct-form-first
+                            label.sr-only(for='email') Mail address
+                            input#email.form-control(type='email', placeholder='Email address', name='email', required='required')
+                        .form-group
+                            label.sr-only(for='first_name') Mail address
+                            input#first_name.form-control(type='text', placeholder='First name', name='first_name', required='required')
+                        .form-group
+                            label.sr-only(for='last_name') Mail address
+                            input#last_name.form-control(type='text', placeholder='Last name', name='last_name', required='required')
+                        .form-group
+                            label.sr-only(for='password') Password
+                            input#password.form-control(type='password', placeholder='Password', name='password', required='required')
+                        .form-group.ct-form-last
+                            label.sr-only(for='repeat_password') Repeat password
+                            input#repeat_password.form-control(type='password', placeholder='Repeat password', name='repeat_password', required='required')
+                        .text-center
+                            br
+                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Let's go!
+                            br
+                            a(href='/login') I already have an account

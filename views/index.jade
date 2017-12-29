@@ -1,0 +1,56 @@
+extends layout
+
+block content
+    .container.no-padding
+        .col-lg-4.col-md-4.col-sm-12.no-padding
+            .col-lg-12.col-md-12.col-sm-6
+                .panel.panel-success
+                    .panel-heading
+                        h2.text-center Devices
+                    .panel-body.list-group
+                        if devices_owned
+                            each device in devices_owned
+                                a.list-group-item(href='/device/' + device.id) #{device.name}
+                        if devices_group
+                            each device in devices_group
+                                a.list-group-item(href='/device/' + device.id) #{device.name} &nbsp;
+                                    small.text-muted From "#{group.name}"
+
+                        a.list-group-item(href='/device/add')
+                            i.fa.fa-plus-circle(aria-hidden="true")
+                            |&nbsp;&nbsp;Add a device
+
+            .col-lg-12.col-md-12.col-sm-6
+                .panel.panel-success
+                    .panel-heading
+                        h2.text-center Groups
+                    .panel-body.list-group
+                        if group
+                            a.list-group-item(href='/group') #{group.name}
+
+                        a.list-group-item(href='/group/new')
+                            i.fa.fa-plus-circle(aria-hidden="true")
+                            | &nbsp;&nbsp;Create a new
+
+        .col-lg-8.col-md-8.col-sm-12
+            .panel.panel-default.panel-article
+                .panel-body
+                    h2 Buy our new product
+                    p.text-muted
+                        i.fa.fa-calendar.text-success(aria-hidden="true")
+                        |&nbsp;&nbsp;28/11/2017
+                    .content
+                        p Go buy our new product product #CuttingEdge #Marvelous. Such advertisement, much promotion such wow.
+                    .text-right
+                        button.btn.btn-success See more &raquo;
+
+            .panel.panel-default.panel-article
+                .panel-body
+                    h2 Application in production!
+                    p.text-muted
+                        i.fa.fa-calendar.text-success(aria-hidden="true")
+                        | &nbsp;&nbsp;28/11/2017
+                    .content
+                        p Wonderful, our IOT application is now in production ! Some useless text to fill the place: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at erat a diam sodales ultricies sed vulputate orci. Integer at enim sit amet diam consequat pretium consectetur quis diam. Aliquam quam erat, sollicitudin eu dui non, condimentum feugiat tortor. Donec eget magna eu dolor dictum finibus. Sed leo neque, luctus sit amet sem non, hendrerit venenatis magna. Nunc nulla leo, lacinia in sem ac, semper tincidunt nisl.
+                    .text-right
+                        button.btn.btn-success See more &raquo;

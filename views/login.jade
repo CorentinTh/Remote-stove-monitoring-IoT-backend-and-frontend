@@ -1,0 +1,50 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-lg-4.col-lg-offset-2.col-md-6.col-md-offset-0.col-sm-8.col-sm-offset-2.col-xs-12
+                .panel.panel-default
+                    .panel-body
+                        h2.text-center Demo
+                        br
+                        p You want a quick overview of this application? Use the demo view!
+                        p.text-muted Be aware that demo accounts are #[strong read-only]. You will not be able to change settings and stuff like that.
+
+                        button.btn.btn-warning.btn-block(onclick='demoView();') Demo view &raquo;
+
+
+            .col-lg-4.col-md-6.col-md-offset-0.col-sm-8.col-sm-offset-2.col-xs-12
+                .panel.panel-default
+                    .panel-body
+                        h2.text-center Login
+                        br
+                        if errors
+                            .alert.alert-danger.alert-dismissable
+                                a.close(href='#', data-dismiss='alert', aria-label='close') ×
+                                ul
+                                    each msg in errors
+                                        li #{msg.msg}
+
+                        form#login-form.ct-form(action='', method='post')
+                            .form-group.ct-form-first
+                                label.sr-only(for='email') Mail address
+                                input#email.form-control(type='email', placeholder='Email address', name='email', required)
+                            .form-group.ct-form-last
+                                label.sr-only(for='password') Password
+                                input#password.form-control(type='password', placeholder='Password', name='password', required)
+                            .text-center
+                                br
+                                button.btn.btn-success.btn-block(onclick="$('#login-form').submit();") Let's go!
+                                br
+                                a(href='/register') I don't have an account
+
+
+
+    script.
+        function demoView(){
+            $('#email').val('demo@heatensee.com');
+            $('#password').val('readonly');
+
+            $('#login-form').submit();
+        }

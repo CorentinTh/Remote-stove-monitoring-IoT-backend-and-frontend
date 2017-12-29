@@ -1,0 +1,96 @@
+extends layout
+
+block content
+    .container
+        .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-12.col-xs-12
+            .panel.panel-default
+                .panel-body
+                    h1.text-center #{user.firstname} #{user.lastname}
+                    hr.ct-hr-green
+                    table.table.ct-table-2cols-50perc
+                        tr
+                            td.text-right: strong Firstname:
+                            td #{user.firstname}
+                        tr
+                            td.text-right: strong Lastname:
+                            td #{user.lastname}
+                        tr
+                            td.text-right: strong Email:
+                            td #{user.email}
+
+                    if own_account
+                        hr.ct-hr-green
+                        .text-center.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2
+                            .row(style="margin-bottom: 2px;")
+                                button.btn.btn-success.btn-block(data-toggle="modal", data-target="#modal-change-password") Change password
+                                #modal-change-password.modal.fade.in(role='dialog')
+                                    .modal-dialog
+                                        .modal-content
+                                            .modal-header
+                                                button.close(type='button', data-dismiss='modal') ×
+                                                h3.modal-title.text-center.text-success Change password
+                                            .modal-body
+                                                .row
+                                                    if change_password_errors
+                                                        .alert.alert-danger.alert-dismissable
+                                                            a.close(href='#', data-dismiss='alert', aria-label='close') ×
+                                                            ul
+                                                                each msg in change_password_errors
+                                                                    li #{msg.msg}
+                                                    form.ct-form.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2(action='/user/change-password', method='post', style='margin-top:15px; margin-bottom:15px')
+                                                        .form-group.ct-form-first
+                                                            label.sr-only(for='currentpassword') Current password
+                                                            input#currentpassword.form-control(type='password', placeholder='Current password', name='currentpassword', required)
+                                                        .form-group
+                                                            label.sr-only(for='newpassword') New password
+                                                            input#newpassword.form-control(type='password', placeholder='New password', name='newpassword', required)
+                                                        .form-group.ct-form-last
+                                                            label.sr-only(for='newpassword') Repeat new password
+                                                            input#repeatnewpassword.form-control(type='password', placeholder='Repeat new password', name='repeatnewpassword', required)
+                                                        .text-center
+                                                            br
+                                                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Change
+                                                            button.btn.btn-default.btn-block(type='button', data-dismiss='modal', style='margin-top:2px;') Cancel
+
+                            .row
+                                button.btn.btn-success.btn-block(data-toggle="modal", data-target="#modal-change-email") Change email
+                                #modal-change-email.modal.fade.in(role='dialog')
+                                    .modal-dialog
+                                        .modal-content
+                                            .modal-header
+                                                button.close(type='button', data-dismiss='modal') ×
+                                                h3.modal-title.text-center.text-success Change email
+                                            .modal-body
+                                                .row
+                                                    if change_email_errors
+                                                        .alert.alert-danger.alert-dismissable
+                                                            a.close(href='#', data-dismiss='alert', aria-label='close') ×
+                                                            ul
+                                                                each msg in change_email_errors
+                                                                    li #{msg.msg}
+                                                    form.ct-form.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2(action='/user/change-email', method='post', style='margin-top:15px; margin-bottom:15px')
+                                                        .form-group.ct-form-first
+                                                            label.sr-only(for='currentpassword2') Current password
+                                                            input#currentpassword2.form-control(type='password', placeholder='Current password', name='currentpassword', required)
+                                                        .form-group.ct-form-last
+                                                            label.sr-only(for='newpassword') New email
+                                                            input#email.form-control(type='email', placeholder='New password', name='email', required)
+                                                        .text-center
+                                                            br
+                                                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Change
+                                                            button.btn.btn-default.btn-block(type='button', data-dismiss='modal', style='margin-top:2px;') Cancel
+
+
+    if change_password_errors
+        script(type='text/javascript').
+            $(window).on('load', function () {
+                $('#modal-change-password').modal('show');
+            });
+
+    if change_email_errors
+        script(type='text/javascript').
+            $(window).on('load', function () {
+                $('#modal-change-email').modal('show');
+            });
+
+// $('#modal-change-password').modal('show');

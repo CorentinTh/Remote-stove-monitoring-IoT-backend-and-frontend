@@ -1,0 +1,162 @@
+doctype html
+head
+    meta(charset='utf-8')
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-title', content='IoT Project')
+
+    link(rel='apple-touch-icon', sizes='16x16', href='/favicons/ios/Icon-16.png')
+    link(rel='apple-touch-icon', sizes='32x32', href='/favicons/ios/Icon-32.png')
+    link(rel='apple-touch-icon', sizes='48x48', href='/favicons/ios/Icon-48.png')
+    link(rel='apple-touch-icon', sizes='60x60', href='/favicons/ios/Icon-60.png')
+    link(rel='apple-touch-icon', sizes='64x64', href='/favicons/ios/Icon-64.png')
+    link(rel='apple-touch-icon', sizes='72x72', href='/favicons/ios/Icon-72.png')
+    link(rel='apple-touch-icon', sizes='76x76', href='/favicons/ios/Icon-76.png')
+    link(rel='apple-touch-icon', sizes='80x80', href='/favicons/ios/Icon-80.png')
+    link(rel='apple-touch-icon', sizes='100x100', href='/favicons/ios/Icon-100.png')
+    link(rel='apple-touch-icon', sizes='114x114', href='/favicons/ios/Icon-114.png')
+    link(rel='apple-touch-icon', sizes='256x256', href='/favicons/ios/Icon-256.png')
+    link(rel='apple-touch-icon', sizes='512x512', href='/favicons/ios/Icon-512.png')
+    link(rel='apple-touch-icon', sizes='1024x1024', href='/favicons/ios/Icon-1024.png')
+
+    link(rel='icon', type='image/png', sizes='192x192', href='/favicons/favicon-192x192.png')
+    link(rel='icon', type='image/png', sizes='32x32', href='/favicons/favicon-32x32.png')
+    link(rel='icon', type='image/png', sizes='96x96', href='/favicons/favicon-96x96.png')
+    link(rel='icon', type='image/png', sizes='16x16', href='/favicons/favicon-16x16.png')
+
+    meta(name='msapplication-TileColor', content='#161c23')
+    meta(name='msapplication-TileImage', content='/favicons/ios/Icon-144.png')
+
+
+    link(rel='stylesheet', href='/stylesheets/boostrap-flatly.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
+
+    script(src = '/js/jquery.js')
+    if jquery_ui
+        link(rel='stylesheet', href='/stylesheets/jquery-ui.css')
+        link(rel='stylesheet', href='/stylesheets/jquery-ui-pips.css')
+    if commons
+        if commons.user.authentified
+            script(src = '/socket.io/socket.io.js')
+            script.
+                var socket = io.connect();
+            script(src = '/javascripts/functions.js')
+            script(src = '/javascripts/io.js')
+
+    script.
+        if (("standalone" in window.navigator) && window.navigator.standalone) {
+            var noddy, remotes = false;
+            document.addEventListener('click', function (event) {
+                noddy = event.target;
+                while (noddy.nodeName !== "A" && noddy.nodeName !== "HTML") {
+                    noddy = noddy.parentNode;
+                }
+                if ('href' in noddy && noddy.href.indexOf('http') !== -1 && (noddy.href.indexOf(document.location.host) !== -1 || remotes)) {
+                    event.preventDefault();
+                    document.location.href = noddy.href;
+                }
+            }, false);
+        }
+
+body
+    unless noMenu
+        nav.navbar.navbar-inverse.navbar-fixed-top
+            .container
+                .navbar-header.text-right
+                    //a.navbar-brand(href='/') Thermonet
+                    a.navbar-brand(href='/')
+                        img(src='/images/logo-inverse.png', alt='Logo')
+
+
+                    .dropdown.visible-xs-inline-block(style='position:static;')
+                        button.btn.dropdown-toggle.ct-navbar-icon(type='button', data-toggle='dropdown')
+                            i.fa.fa-bell(aria-hidden='true')
+                            span.notification-count
+                        .dropdown-menu.ct-notification-dropdown-menu(style='width:100%;')
+                            .notification-list.list-group
+                                .no-notification No notification
+
+                    .dropdown.visible-xs-inline-block(style='position:static;')
+                        button.btn.dropdown-toggle.ct-navbar-icon(type='button', data-toggle='dropdown', style='margin-right:20px;')
+                            i.fa.fa-user(aria-hidden='true')
+                        .dropdown-menu.ct-user-dropdown-menu(style='width:100%;')
+                            a.ct-user-dropdown-icon-header(href='/user/me')
+                                i.fa.fa-user-circle-o(aria-hidden='true')
+                            p #{commons.user.firstname} #{commons.user.lastname}
+                            p.email #{commons.user.email}
+                            hr
+                            a.btn.btn-success.btn-sm(href='/user/me', title='My account', data-toggle='tooltip', data-placement='bottom', style='margin-right:2px')
+                                i.fa.fa-cog(aria-hidden='true')
+                            a.btn.btn-danger.btn-sm(href='/disconnect', title='Log out', data-toggle='tooltip', data-placement='bottom', style='margin-left:2px')
+                                i.fa.fa-sign-out(aria-hidden='true')
+
+                    button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-main')
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                #navbar-main.navbar-collapse.collapse
+                    ul.nav.navbar-nav
+                        if commons.user.authentified
+                            li: a(href='/device/all') My devices
+                            li: a(href='/group') Groups
+                            li: a(href='/contact') Contact
+                            //li: a(href='/demo') Demo
+
+                        li: a(href='/about') About
+                    ul.nav.navbar-nav.navbar-right.ct-navbar-icons
+                        if commons.user.authentified
+                            li.hidden-xs
+                                .dropdown
+                                    button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+                                        i.fa.fa-bell(aria-hidden='true')
+                                        span.notification-count
+                                    .dropdown-menu.ct-notification-dropdown-menu
+                                        .notification-list.list-group
+                                            .no-notification No notification
+                            li.hidden-xs
+                                .dropdown
+                                    button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+                                        i.fa.fa-user(aria-hidden='true')
+                                    .dropdown-menu.ct-user-dropdown-menu
+                                        a.ct-user-dropdown-icon-header(href='/user/me')
+                                            i.fa.fa-user-circle-o(aria-hidden='true')
+                                        p #{commons.user.firstname} #{commons.user.lastname}
+                                        p.email #{commons.user.email}
+                                        hr
+                                        a.btn.btn-success.btn-sm(href='/user/me', title='My account', data-toggle='tooltip', data-placement='bottom', style='margin-right:2px')
+                                            i.fa.fa-cog(aria-hidden='true')
+                                        a.btn.btn-danger.btn-sm(href='/disconnect', title='Log out', data-toggle='tooltip', data-placement='bottom', style='margin-left:2px')
+                                            i.fa.fa-sign-out(aria-hidden='true')
+
+
+                        else
+                            li
+                                a(href='/login', title='Login', data-toggle="tooltip", data-placement="bottom")
+                                    i.fa.fa-sign-in(aria-hidden='true')
+                            li
+                                a(href='/register', title='Register', data-toggle="tooltip", data-placement="bottom")
+                                    i.fa.fa-user-plus(aria-hidden='true')
+
+    if commons
+        if commons.flash
+            if commons.flash.length
+                .container
+                    .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2
+                        each flash in commons.flash
+                            div(class="alert alert-#{ flash.type } alert-dismissable")
+                                a.close(href='#', data-dismiss='alert', aria-label='close') ×
+                                | !{flash.message}
+
+
+    block content
+
+    script(src = '/js/bootstrap.js')
+    script.
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+

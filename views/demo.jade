@@ -1,0 +1,173 @@
+extends layout
+
+block content
+    .container
+
+        #nodata-alert.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2
+            .alert.alert-warning Live is off: no reception.
+
+        //.col-lg-6.col-md-6.col-sm-8.col-xs-12
+        #grid-container.col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12.no-padding
+            .panel.panel-default
+                .panel-body.text-center
+                    h2 Live thermal camera demo
+                    p#fps-thermal-live.text-muted 0 FPS
+                    br
+                    .responsive-canvas
+                        canvas#thermal-grid-canvas(width='800px', height='800px', style='border:6px solid #c7c7c7; border-radius:20px; background-color:#c7c7c7')
+
+                    br
+                    br
+                    table.table.table-switch.ct-table-2cols-50perc
+                        tr
+                            td Display temperature
+                            td
+                                .switch-container
+                                    label.switch
+                                        input#allow-notifications(type='checkbox', name="allow-notifications", onchange="toogleDisplay()")
+                                        span.slider.round
+                    br
+                    br
+                    div(style='padding:0 20px; margin-bottom:50px')
+                        #slider-threshold
+
+        #3d-graph-container.col-lg-6.col-md-6.col-sm-8.col-xs-12(style="display: none;")
+            .panel.panel-default
+                .panel-body.text-center
+                    h2 Live 3D graph
+                    br
+                    div#3d-graph-div(style='width:100%')
+
+
+    script(src='/javascripts/jquery-ui.js')
+    script(src='/javascripts/jquery-ui-punch.js')
+    script(src='/javascripts/jquery-ui-pips.js')
+    script(src='https://cdn.plot.ly/plotly-latest.min.js')
+
+    script.
+        var displayTemperature = false,
+            max_threshold = 27,
+            min_threshold = 20,
+            show3Dgraph = false;
+
+        $("#slider-threshold").slider({
+            range: true,
+            min: 0,
+            max: 60,
+            values: [min_threshold, max_threshold],
+            slide: function (event, ui) {
+                min_threshold = ui.values[0];
+                max_threshold = ui.values[1];
+            }
+
+        }).slider('float', {formatCelcius:true}).slider('pips', {labels: {"first": "0°C", "last": "60°C"}, step: 10});
+
+
+
+        function toogleDisplay() {
+            displayTemperature = !displayTemperature;
+        }
+
+        function heatMapColorforValue(value) {
+            return "hsl(" + ((1.0 - value) * 240) + ", 100%, 50%)";
+        }
+
+        function map(n, start1, stop1, start2, stop2) {
+            return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+        }
+
+        function drawGrid(data) {
+            var canvas = document.getElementById('thermal-grid-canvas'),
+                ctx = document.getElementById('thermal-grid-canvas').getContext('2d');
+
+            var tile = Math.round(canvas.width / 8);
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '20px Verdana';
+
+            for (var x = 0; x < 8; ++x) {
+                for (var y = 0; y < 8; ++y) {
+                    var val = Math.max(Math.min(data[y * 8 + x], max_threshold), min_threshold);
+
+                    ctx.beginPath();
+                    ctx.fillStyle = heatMapColorforValue(map(val, min_threshold, max_threshold, 0, 1));
+                    ctx.rect(x * tile, y * tile, tile, tile);
+                    ctx.fill();
+
+                    if (displayTemperature) {
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText(Math.round(data[y * 8 + x]) + '°C', x * tile + tile / 2, y * tile + tile / 2)
+                    }
+                }
+            }
+        }
+
+        function draw3dChart(data) {
+            var chart = [],
+                threshold_min = [],
+                threshold_max = [];
+
+            for (var x = 0; x < 8; ++x) {
+                chart[x] = [];
+                threshold_min[x] = [];
+                threshold_max[x] = [];
+
+                for (var y = 0; y < 8; ++y) {
+                    chart[x].push(data[y * 8 + x]);
+                    threshold_min[x].push(min_threshold);
+                    threshold_max[x].push(max_threshold);
+                }
+            }
+
+            var data_z1 = {z: chart, type: 'surface'};
+            var data_z2 = {z: threshold_min, showscale: false, opacity: 0.7, type: 'surface'};
+            var data_z3 = {z: threshold_max, showscale: false, opacity: 0.7, type: 'surface'};
+
+            Plotly.newPlot('3d-graph-div', [data_z1, data_z2, data_z3], {
+                margin: {
+                    l: 0,
+                    r: 0,
+                    b: 0,
+                    t: 0
+                }
+            });
+
+        }
+
+
+        function graph3d() {
+            show3Dgraph = !show3Dgraph;
+
+            $("#3d-graph-container").toggle();
+
+            if($("#grid-container").hasClass('no-padding')){
+                $("#grid-container").removeClass('no-padding col-lg-offset-3 col-md-offset-3 col-sm-offset-2')
+            }else{
+                $("#grid-container").addClass('no-padding col-lg-offset-3 col-md-offset-3 col-sm-offset-2')
+            }
+
+        }
+
+
+        var fps = {frame: 0};
+        var lastLoop = new Date;
+        socket.on('new_data_live', function (data) {
+
+            if (data.data.sensors.thermalgrid) {
+                drawGrid(data.data.sensors.thermalgrid);
+
+                if(show3Dgraph) draw3dChart(data.data.sensors.thermalgrid);
+
+                $('#nodata-alert').remove();
+
+                var thisLoop = new Date;
+                var val = 1000 / (thisLoop - lastLoop);
+                lastLoop = thisLoop;
+
+                $('#fps-thermal-live').html(Math.round(val * 100) / 100 + ' FPS');
+
+            } else {
+                console.log("Bad format live data");
+            }
+        });

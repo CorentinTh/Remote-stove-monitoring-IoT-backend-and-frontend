@@ -1,0 +1,151 @@
+extends ../../layout
+
+block content
+
+
+    #panels-wrapper
+        .container
+            #nav-panels
+                i#chevron-left.fa.fa-chevron-left.hide-chevron(aria-hidden='true')
+                i#circle1.fa.fa-circle(aria-hidden='true', onclick='setPanel(0);')
+                i#circle2.fa.fa-circle-o(aria-hidden='true', onclick='setPanel(1);')
+                i#circle3.fa.fa-circle-o(aria-hidden='true', onclick='setPanel(2);')
+                i#chevron-right.fa.fa-chevron-right(aria-hidden='true')
+
+        #container1.panel-wrapper
+            .container
+                .ct-responsive-rows
+                    .item
+                        .panel.panel-default
+                            .panel-body
+                                h2.green.text-center Ambient temperature
+                                canvas#temperature-chart-canvas
+
+                    .item.item-row
+                        .col-lg-6.col-md-6.col-sm-6.col-xs-6.no-padding.ct-big-numbers-box
+                            .panel.panel-default
+                                .panel-body.text-center.panel-success
+                                    div#big-temperature.big-info 8°C
+                                    div Current ambient temperature
+
+                        .col-lg-6.col-md-6.col-sm-6.col-xs-6.no-padding.ct-big-numbers-box
+                            .panel.panel-default
+                                .panel-body.text-center.panel-success
+                                    div#big-humidity.big-info 25%
+                                    div Current humidity
+
+                    .item.item-row
+                        .col-lg-6.col-md-6.col-sm-6.col-xs-6.no-padding.ct-big-numbers-box
+                            .panel.panel-default
+                                .panel-body.text-center.panel-danger
+                                    div#big-state.big-info OFF
+                                    div Connexion state
+
+                        .col-lg-6.col-md-6.col-sm-6.col-xs-6.no-padding.ct-big-numbers-box
+                            .panel.panel-default
+                                .panel-body.text-center.panel-warning
+                                    div#big-last-reception.big-info.big-info-smaller 10 min ago
+                                    div Last connexion
+
+
+                    .item
+                        .panel.panel-default
+                            .panel-body
+                                h2.text-center.text-success Humidity
+                                canvas#humidity-chart-canvas
+
+        #container2.panel-wrapper(style="margin-left:100%")
+            .container
+                .ct-responsive-rows
+                    .item.item-row.no-padding-small
+                        .col-lg-6.col-md-6.col-sm-6.col-xs-12.no-padding
+                            .panel.panel-default
+                                .panel-body
+                                    h2.text-center.text-success Thermal camera live&nbsp;
+                                        span#fps-thermal-live.small(style='display:inline-block;') 0 FPS
+                                    .responsive-canvas
+                                        canvas#thermal-grid-canvas(width='800px', height='800px', style='border:6px solid #c7c7c7; border-radius:20px')
+                                    br
+                                    br
+                                    table.table.table-switch.ct-table-2cols-50perc
+                                        tr
+                                            td(style='font-size:15px; font-weight:400;') Display temperature
+                                            td
+                                                .switch-container
+                                                    label.switch
+                                                        input#allow-notifications(type='checkbox', name="allow-notifications", onchange="toogleDisplay()")
+                                                        span.slider.round
+
+                        .col-lg-6.col-md-6.col-sm-6.col-xs-12.no-padding
+                            .panel.panel-default
+                                .panel-body
+                                    h2.text-center.text-success Stove temperature
+                                    .responsive-canvas
+                                        canvas#stove-canvas(width='400px', height='400px', style='border:6px solid #18bc9c; border-radius:20px; background-color:#2c3e50')
+                    div
+                    .item
+                        .panel.panel-default
+                            .panel-body
+                                h2.green.text-center(style='padding-bottom:12.75px') Max temperature
+                                canvas#thermalgrid-chart-canvas
+
+        #container3.panel-wrapper(style="margin-left:200%")
+            .container
+
+                if commons
+                    if commons.user
+                        if commons.user.privileges
+                            if commons.user.privileges <= 1
+                                .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
+                                    .alert.alert-warning As your account is in&nbsp;
+                                        strong read only
+                                        |. So the changes you'll perform will not be taken into account.
+
+                .ct-responsive-rows
+                    .item
+                        .panel.panel-default
+                            .panel-body
+                                h2.text-center.text-success Notification periods
+                                #range-sliders
+                                .text-center
+                                    button.btn.btn-success(onclick='manageSliders(\"create\")', data-toggle='tooltip', data-placement='top', title='Add a period', style="border-radius: 20px;padding: 5px 10px; outline:none") Add &nbsp;
+                                        i.fa.fa-plus(aria-hidden='true')
+                    div
+                    .item
+                        .panel.panel-default
+                            .panel-body
+                                h2.text-center.text-success(style="margin-bottom:0") Device settings
+                                p.text-center.text-muted(style='margin-bottom:20px;font-weight:normal;') This setting affects the device configuration (so it affects all people in the group)
+                                table.table.table-switch.ct-table-2cols-50perc
+                                    tr
+                                        td Allow notifications
+
+                                        td
+                                            .switch-container
+                                                label.switch
+                                                    if settings.allows_notifications == 1
+                                                        input#allow-notifications(type='checkbox', name="allow-notifications", onchange="settings(this)", "checked")
+                                                    else
+                                                        input#allow-notifications(type='checkbox', name="allow-notifications", onchange="settings(this)")
+                                                    span.slider.round
+                                    tr
+                                        td
+                                            input#name-input.form-control(type='text', name='', value=title)
+                                        td: button#change-name.btn.btn-success(onclick="settings(this)") Change name
+
+
+    script(src = '/js/moment.min.js')
+
+    script.
+        moment.locale("en-gb");
+        var glb_data = !{JSON.stringify(deviceData)},
+            glb_time_ranges = !{JSON.stringify(time_ranges)};
+
+
+    script(src='/javascripts/jquery-ui.js')
+    script(src='/javascripts/jquery-ui-punch.js')
+    script(src='/javascripts/jquery-ui-pips.js')
+
+    script(src = '/js/Chart.js')
+
+    script(src='/javascripts/devices/thermonet/index.js')

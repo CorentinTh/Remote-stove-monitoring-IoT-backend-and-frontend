@@ -1,0 +1,67 @@
+extends ../layout
+
+block content
+    .container
+        if devices_owned
+            each device in devices_owned
+                .col-lg-4.col-md-6.col-sm-6.col-xs-12
+                    .panel.panel-success
+                        .panel-heading.text-center
+                            h2= device.name
+
+                        .panel-body
+                            table.table.ct-table-2cols-50perc
+                                tr
+                                    td.text-right: strong Serial number
+                                    td= device.serial_number
+                                tr
+                                    td.text-right: strong Type
+                                    td= device.type
+                                tr
+                                    td.text-right: strong Name
+                                    td= device.name
+                                tr
+                                    td.text-right: strong Notification allowed
+                                    if device.allows_notifications
+                                        td Yes
+                                    else
+                                        td No
+
+                            hr.ct-hr-green
+
+                            .text-center
+                                a.btn.btn-success(href='/device/'+device.id) See more &raquo;
+
+        if devices_group
+            each device in devices_group
+                .col-lg-4.col-md-6.col-sm-6.col-xs-12
+                    .panel.panel-success
+                        .panel-heading.text-center
+                            h2= device.name
+
+                        .panel-body
+                            table.table.ct-table-2cols-50perc
+                                tr
+                                    td.text-right: strong Serial number
+                                    td= device.serial_number
+                                tr
+                                    td.text-right: strong Type
+                                    td= device.type
+                                tr
+                                    td.text-right: strong Name
+                                    td= device.name
+                                tr
+                                    td.text-right: strong Notification allowed
+                                    if device.allows_notifications
+                                        td Yes
+                                    else
+                                        td No
+                                tr
+                                    td.text-right: strong In group
+                                    td "#{group.name}"
+
+
+                            hr.ct-hr-green
+
+                            .text-center
+                                a.btn.btn-success(href='/device/' + device.id) See more &raquo;

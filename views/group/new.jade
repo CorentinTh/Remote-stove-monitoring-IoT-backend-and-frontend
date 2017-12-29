@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    .container
+        .col-lg-4.col-lg-offset-4.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+            .panel.panel-default
+                .panel-body
+                    h1.text-center Create a group
+                    br
+                    form(action='' method='post')
+                        .form-group
+                            label.sr-only(for='name') Group name
+                            input#name.form-control(type='text', placeholder='Group name', name='name', required='required')
+                        .text-center
+                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Let's go!

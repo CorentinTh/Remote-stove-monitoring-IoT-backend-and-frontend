@@ -1,0 +1,30 @@
+extends ../../layout
+
+block content
+    .container
+        .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-8.col-sm-offset-2.col-xs-12
+            .panel.panel-default
+                .panel-body
+                    form.no-padding
+                        .radio-group
+                            .col-lg-4.col-md-4.col-sm-4.col-xs-4.no-padding
+                                .ct-plate-container.ct-radio.selected(data-value='4')
+                                    img.img-responsive(src='/images/cooking-plate-designs/cookin-plate1-design1.png')
+                            .col-lg-4.col-md-4.col-sm-4.col-xs-4.no-padding
+                                .ct-plate-container.ct-radio(data-value='3')
+                                    img.img-responsive(src='/images/cooking-plate-designs/cookin-plate2-design1.png')
+                            .col-lg-4.col-md-4.col-sm-4.col-xs-4.no-padding
+                                .ct-plate-container.ct-radio(data-value='2')
+                                    img.img-responsive(src='/images/cooking-plate-designs/cookin-plate3-design1.png')
+
+                        #amount-of-plates 4 plates
+                        input.hidden#plates_amount(type='hidden', value='4')
+
+    script.
+        $('.ct-radio').click(function () {
+            $(this).parent().parent().find('.ct-radio').removeClass('selected');
+            $(this).addClass('selected');
+            var val = $(this).attr('data-value');
+            $('#plates_amount').val(val);
+            $('#amount-of-plates').html(val + ' plates');
+        });

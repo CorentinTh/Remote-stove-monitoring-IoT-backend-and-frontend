@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+    .container
+        .col-lg-4.col-lg-offset-4.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+            .panel.panel-default
+                .panel-body
+                    h1.text-center Adding a device
+                    br
+                    form(action='/device/add', method='post')
+                        .form-group
+                            label.sr-only(for='reference') Reference number
+                            input#reference.form-control(type='text', placeholder='Reference number', name='reference', required)
+                            .text-center.text-muted(style='padding-top:10px;') Respect uppercase and lowercase
+                        .text-center
+                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Let's go!
+

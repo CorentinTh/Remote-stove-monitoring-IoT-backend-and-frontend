@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+    .container
+        .col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2.col-sm-12.col-xs-12
+            .panel.panel-default
+                .panel-body.text-center
+                    h1 Group invitations
+                    br
+                    br
+
+                    .well #{manager.firstname} #{manager.lastname} invited you to his group:&nbsp;
+                        strong.text-success= group.name
+                        br
+                        br
+                        .row
+                            form(action='', method='post')
+                                button.btn.btn-success(type='submit', value='accept', name='submit') Accept
+                                button.btn.btn-danger(type='submit', value='decline', name='submit') Decline

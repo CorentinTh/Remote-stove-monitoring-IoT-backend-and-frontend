@@ -1,0 +1,131 @@
+extends ../layout
+
+block content
+    .container
+        if no_group
+            .col-lg-4.col-md-6.col-sm-8.col-xs-12.col-lg-offset-4.col-md-offset-3.col-sm-offset-2
+                .panel.panel-default
+                    .panel-body
+                        h2.text-success.text-center You are in no group
+                        p You can create your own group, or wait for someone to invite you in his group.
+                        p You will see all the groups you are in here.
+                        br
+                        .text-center
+                            a.btn.btn-success(href='group/new', title='Create a group') Create a group
+        else
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12.text-center
+                button.btn.btn-success(data-toggle="modal", data-target="#modal-add-new-group") Create a new group
+                br
+                br
+                #modal-add-new-group.modal.fade.in(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                button.close(type='button', data-dismiss='modal') ×
+                                h3.modal-title.text-center.text-success Upgrade your account
+                            .modal-body.text-center
+                                p Your account plan does not allow you have more than one group.
+                                p Subscribe to a&nbsp;
+                                    strong.text-success Premium
+                                    |&nbsp;account for only 5€/month.
+                                br
+                                .row
+                                    .col-lg-6.col-md-6.col-sm-6.col-xs-12
+                                        .well(style='border: 1px solid #ababab')
+                                            h3.text-success(style='margin-top:0') Premium
+                                            hr.ct-hr-green
+                                            .lead
+                                                p No ads
+                                                p Free hug from the developers
+                                                p Unlimited amount of groups
+                                                p Nearly the same, but better
+                                            hr.ct-hr-green
+                                            p.h4.text-success(style='margin-top:0') 5$/month
+                                            hr.ct-hr-green
+                                            button.btn.btn-success Go!
+
+                                    .col-lg-6.col-md-6.col-sm-6.col-xs-12
+                                        .well.text-center(style='border: 1px solid #ababab')
+                                            h3(style='margin-top:0') Basic
+                                            hr(style='border-color:#ababab')
+                                            .lead
+                                                p Ads
+                                                p Nothing from the developers
+                                                p Limited amount of groups
+                                                p The same
+                                            hr(style='border-color:#ababab')
+                                            p.h4.text-success(style='margin-top:0') Free
+                                            hr(style='border-color:#ababab')
+                                            button.btn.btn-default Ok, fine...
+
+            .col-lg-4.col-md-6.col-sm-8.col-xs-12
+                .panel.panel-default
+                    .panel-body
+                        h3.text-success
+                            small(style='display:block;') Group name:
+                            | #{group_name}
+                        hr
+                        h3: small(style='display:block;') People:
+                        if group_users
+                            if(group_users.length > 0)
+                                each user in group_users
+                                    a(href='/user/'+user.id, style='display:block') #{user.lastname} #{user.firstname}
+                        hr
+                        h3: small(style='display:block;') Devices:
+                        if group_devices
+                            if(group_devices.length > 0)
+                                each device in group_devices
+                                    a(href='/device/'+device.id, style='display:block') #{device.name}
+                            else
+                                p.text-warning You don't have any device linked to this group
+
+
+                        if is_manager
+                            hr
+                            .text-center
+                                button.btn.btn-success.btn-block(data-toggle="modal", data-target="#modal-add-person") Add a person
+                                button.btn.btn-success.btn-block(data-toggle="modal", data-target="#modal-add-device") Add a device
+
+                                #modal-add-person.modal.fade.in(role='dialog')
+                                    .modal-dialog
+                                        .modal-content
+                                            .modal-header
+                                                button.close(type='button', data-dismiss='modal') ×
+                                                h3.modal-title.text-center.text-success Add a person
+                                            .modal-body
+                                                .row
+                                                    form.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2(action='/group/add-person', method='post', style='margin-top:15px; margin-bottom:15px')
+                                                        p.text-muted The person your inviting must already have an account.
+                                                        .form-group
+                                                            label.sr-only(for='person_email') Person email
+                                                            input#person_email.form-control(type='email', placeholder='Person email address', name='person_email', required)
+                                                        .text-center
+                                                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Invite
+
+                                #modal-add-device.modal.fade.in(role='dialog')
+                                    .modal-dialog
+                                        .modal-content
+                                            .modal-header
+                                                button.close(type='button', data-dismiss='modal') ×
+                                                h3.modal-title.text-center.text-success Add a device
+                                            .modal-body
+                                                .row
+                                                    form.col-lg-6.col-lg-offset-3.col-md-8.col-md-offset-2(action='/group/add-device', method='post', style='margin-top:15px; margin-bottom:15px')
+                                                        p.text-muted The person your inviting must already have an account.
+                                                        .form-group
+                                                            label.sr-only(for='device_id') Device
+                                                            select#device_id.form-control(name='device_id', required)
+                                                                if(user_devices.length > 0)
+                                                                    each device in user_devices
+                                                                        option(value=device.id)= device.name
+                                                                else
+                                                                    option(value=-1, selected, disabled) You don't have any device
+                                                        .text-center
+                                                            button.btn.btn-success.btn-block(type='submit', name='submit', value='submit') Add
+
+
+    if upgrade_modal_on
+        script(type='text/javascript').
+            $(window).on('load', function () {
+                $('#modal-add-new-group').modal('show');
+            });
